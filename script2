@@ -1,0 +1,119 @@
+//DELETE A TASK-----------------------------------------------------------------
+$(function() {
+    $(".delete_task_icon").click(function(){
+        var del_id =$(this).attr("id");
+        var info = 'taskid=' + del_id;
+        if(confirm("SURE YOU WANT TO DELETE THIS TASK ?"))
+        {
+            $.ajax({
+                type: "POST",
+                url: "delTaskDB.php",
+                data: info,
+                success: function(){
+                    $("#messages").html("<b>Task deleted successfully</b>").fadeOut(5000);
+                }
+            });
+            $(this).parent().parent().animate({ backgroundColor: "#fbc7c7" }, "fast").animate({ opacity: "hide" }, "slow");
+        }
+        return false;
+    });
+});
+                    
+                    
+//RESTART TASK------------------------------------------------------------------
+$(function(){
+    $(".restart_task_icon").click(function(){
+        $("#start_button").hide();
+        $("#end_button").show();
+         taskname=$(this).attr("id");
+         project=$(this).attr("project");
+        document.getElementById('task_start').value=taskname;
+        document.getElementById('project_start').value=project;
+         today = new Date();
+        hours1 = today.getHours();
+         minutes1 = today.getMinutes();
+         seconds1 = today.getSeconds();
+       start=hours1+":"+minutes1+":"+seconds1;
+         var day=today.getDate();
+        var month=today.getMonth()+1;
+       var year=today.getFullYear();
+     var    sdate=year+"-"+month+"-"+day;
+        var enddate=sdate;
+        $("#messages").html("<b>Task restarted successfully. Click END to submit</b>").fadeOut(7000);
+        
+    });
+});
+            
+            
+//START BUTTON CODE-------------------------------------------------------------
+ today = new Date();
+          var  hours1 ; 
+           var  minutes1 ;
+            var seconds1;
+            var start;
+            var project;
+            var taskName;
+$(function(){
+   $("#end_button").hide();
+    $("#start_button").click(function(){
+          taskName=$("#task_start").val().toLowerCase();
+                project=$("#project_start").val().toLowerCase();
+        if($.trim(taskName)=="")
+        {
+            $("#messages").html("<b>Please enter the task name</b>").fadeOut(5000);
+        }
+        else{
+            $("#end_button").show();
+            $("#start_button").hide();
+             today = new Date();
+             hours1 = today.getHours(); 
+            minutes1 = today.getMinutes();
+            seconds1 = today.getSeconds();
+            if(project==""){
+                project="others";
+            }
+            start=hours1+":"+minutes1+":"+seconds1;
+           
+    }//end of else
+    });
+    });
+$(function(){
+   $("#next").click(function(){
+       
+       alert($("#value").val());
+   }) ;
+    
+});
+
+ $(function(){
+                $("#end_button").click(function(){
+                   // alert("1");
+                $("#start_button").show();
+                $("#end_button").hide();
+                taskName=$("#task_start").val().toLowerCase();
+                project=$("#project_start").val().toLowerCase();
+                document.getElementById('task_start').value=""; 
+                document.getElementById('project_start').value="";
+                var today = new Date();
+                var hours2 = today.getHours(); 
+                var minutes2 = today.getMinutes();
+                var seconds2 = today.getSeconds();
+                var day=today.getDate();
+                var month=today.getMonth()+1;
+                var year=today.getFullYear();
+                var sdate=year+"-"+month+"-"+day;
+                var enddate=sdate;
+                var end=hours2+":"+minutes2+":"+seconds2;
+                var duration=(hours2-hours1)+":"+(minutes2-minutes1)+":"+(seconds2-seconds1);
+                var info="taskName="+taskName +"&project="+project+"&startTime="+start+"&endTime="+end+"&startDate="+sdate+"&enddate="+enddate+"&duration="+duration;
+                $.ajax({
+                    type:"POST",
+                    url:"addTask.php",
+                    data:info,
+                    success:function(){
+                        $("#task_table").load("taskPage.php");
+                        $("#messages").html("<b>Task successfully added</b>").fadeOut(5000);
+                    }
+                });
+            });
+        });
